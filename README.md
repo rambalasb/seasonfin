@@ -20,7 +20,7 @@ SeasonFin works in the LG webOS Jellyfin app, and in other TV apps that use Jell
 In Jellyfin, go to `Dashboard > Branding`, paste this into the **Custom CSS code** box and click **Save**:
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@main/base/theme.css");
+@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@1/base/theme.css");
 
 :root {
     --brand-name: "MyTV";
@@ -29,7 +29,20 @@ In Jellyfin, go to `Dashboard > Branding`, paste this into the **Custom CSS code
 
 Change `MyTV` to whatever you want shown in the top bar. Delete the `:root { ... }` block to keep the default ("JELLYFIN").
 
-Then leave the dashboard and hard-refresh the page (Ctrl+Shift+R, or Cmd+Shift+R on a Mac). On a TV, close and reopen the Jellyfin app.
+Then leave the dashboard and hard-refresh the page (Ctrl+Shift+R, or Cmd+Shift+R on a Mac).
+
+`@1` always loads the newest 1.x release, so you get updates without changing anything.
+
+#### On a TV
+
+The Custom CSS lives on your server, so there's nothing to install on the TV itself:
+
+1. Set up the theme on the server as above (from a computer is easiest).
+2. On the TV, install the **Jellyfin** app (LG Content Store on webOS) and sign in to your server.
+3. In the TV app, open `Settings > Display` and check that **Display Mode** is **Auto** (or **TV**), and that **Disable server-provided custom CSS code** is **off**. These are per-device, so set them on the TV itself.
+4. Fully close the app and open it again to load the theme. On LG, open the running-apps view and swipe the app closed, or restart the TV.
+
+The TV downloads the theme and fonts from the internet. If your TV has no internet access (local network only), paste the full contents of `base/theme.css` (and any seasonal file under it) into the Custom CSS box instead of the `@import` lines.
 
 <hr>
 
@@ -39,7 +52,7 @@ Seasonal themes load on top of the base theme and change colours and decorations
 
 | Season | Line to add |
 | --- | --- |
-| Halloween | `@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@main/seasonal/halloween/theme.css");` |
+| Halloween | `@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@1/seasonal/halloween/theme.css");` |
 
 Only load one seasonal theme at a time. All `@import` lines must come before the `:root { ... }` block. To go back to the base look, delete the seasonal line.
 
@@ -61,6 +74,10 @@ base/theme.css         the main theme (always load this first)
 seasonal/<season>/     one folder per seasonal theme
 seasonal/_template/    starting point for a new season
 ```
+
+### Releasing
+
+Push changes to `main`, then tag a release (`git tag v1.1.0 && git push origin v1.1.0`). Installs using `@1` pick it up from the CDN, usually within a day. Use a new major version (`v2.0.0`) only for changes that would break people's existing setups.
 
 ### Disclaimer
 
