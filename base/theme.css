@@ -1,0 +1,966 @@
+/*! SeasonFin: base theme for Jellyfin 12 (Modern layout)
+ * Load this first; seasonal themes and add-ons go after it.
+ * MIT licensed; see LICENSE. */
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* Logo text. Override in Jellyfin Custom CSS:  :root { --brand-name: "MyTV"; } */
+:root {
+    --brand-name: "JELLYFIN";
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Tokens
+ * Seasonal themes override these. Keep every colour and its "-rgb" twin
+ * (space-separated R G B) in sync.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+    --sf-accent: #e50914;
+    --sf-accent-hover: #f6121d;
+    --sf-accent-rgb: 229 9 20;
+    --sf-on-accent: #fff;
+
+    --sf-bg: #0b0b0b;
+    --sf-bg-rgb: 11 11 11;
+    --sf-surface: #161616;
+    --sf-surface-rgb: 22 22 22;
+    --sf-raised: #222;
+    --sf-raised-hover: #2e2e2e;
+    --sf-overlay: rgb(20 20 20 / 0.97);
+
+    --sf-text: #fff;
+    --sf-text-soft: #d2d2d2;
+    --sf-text-muted: #9a9a9a;
+    --sf-hairline: rgb(255 255 255 / 0.09);
+    --sf-hover: rgb(255 255 255 / 0.07);
+
+    --sf-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --sf-font-logo: "Anton", "Impact", var(--sf-font);
+
+    --sf-gutter: 3.5vw;
+    --sf-round: 6px;
+    --sf-round-sm: 4px;
+    --sf-pill: 999px;
+    --sf-lift: 0 14px 32px -8px rgb(0 0 0 / 0.85);
+    --sf-speed: 220ms;
+    --sf-curve: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    /* Extra background layers for the sign-in page (seasonal art). */
+    --sf-login-art: linear-gradient(transparent, transparent);
+}
+
+/* Older TV browsers (webOS 5: Chromium 68) lack clamp(); they keep the value above. */
+@supports (width: clamp(1px, 1px, 1px)) {
+    :root {
+        --sf-gutter: clamp(1rem, 3.5vw, 3.75rem);
+    }
+}
+
+/* Jellyfin's own colour variables, pointed at ours so its React pages
+ * (app bar, library toolbars, dashboard) pick up the theme too. */
+:root,
+:root[data-theme] {
+    --jf-palette-primary-main: var(--sf-accent);
+    --jf-palette-primary-mainChannel: var(--sf-accent-rgb);
+    --jf-palette-primary-light: var(--sf-accent-hover);
+    --jf-palette-primary-dark: var(--sf-accent);
+    --jf-palette-primary-contrastText: var(--sf-on-accent);
+    --jf-palette-secondary-main: var(--sf-accent);
+    --jf-palette-secondary-mainChannel: var(--sf-accent-rgb);
+    --jf-palette-background-default: var(--sf-bg);
+    --jf-palette-background-defaultChannel: var(--sf-bg-rgb);
+    --jf-palette-background-paper: var(--sf-surface);
+    --jf-palette-background-paperChannel: var(--sf-surface-rgb);
+    --jf-palette-AppBar-defaultBg: var(--sf-bg);
+    --jf-palette-text-primary: var(--sf-text);
+    --jf-palette-text-secondary: var(--sf-text-muted);
+    --jf-palette-divider: var(--sf-hairline);
+    --jf-palette-action-hover: var(--sf-hover);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Page
+ * ───────────────────────────────────────────────────────────────────────── */
+
+html,
+body,
+.backgroundContainer,
+.skinBody {
+    background-color: var(--sf-bg);
+}
+
+body,
+button,
+input,
+select,
+textarea,
+h1, h2, h3, h4, h5, h6,
+.MuiTypography-root,
+.MuiButtonBase-root {
+    font-family: var(--sf-font);
+}
+
+body {
+    color: var(--sf-text-soft);
+}
+
+::selection {
+    background: rgb(var(--sf-accent-rgb) / 0.75);
+    color: #fff;
+}
+
+/* Slim, dark scrollbars instead of the browser default. */
+* {
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+    scrollbar-width: thin;
+}
+
+/* Library backdrops: dim them so text stays readable. */
+.backgroundContainer.withBackdrop {
+    background: linear-gradient(180deg, rgb(var(--sf-bg-rgb) / 0.55), rgb(var(--sf-bg-rgb) / 0.92) 70%);
+}
+
+:focus-visible {
+    outline: 2px solid var(--sf-text);
+    outline-offset: 2px;
+}
+
+a {
+    color: inherit;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Top bar
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.MuiAppBar-root.MuiAppBar-colorTransparent,
+.MuiAppBar-root.MuiAppBar-colorDefault {
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.78), rgb(0 0 0 / 0));
+    box-shadow: none;
+    color: var(--sf-text-soft);
+}
+
+/* Library pages add a second toolbar; give the whole bar a solid base. */
+.MuiAppBar-root:has(> .MuiToolbar-root + .MuiToolbar-root) {
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.9), rgb(var(--sf-bg-rgb) / 0.96));
+    backdrop-filter: blur(8px);
+}
+
+/* Wordmark: the server logo image is swapped for --brand-name. */
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:has(> .MuiButton-startIcon > img) {
+    font-size: 0;
+    margin-right: 1.75rem;
+    padding-left: 0;
+    background: none;
+}
+
+.MuiAppBar-root .MuiStack-root > .MuiButton-root > .MuiButton-startIcon:has(> img) {
+    display: none;
+}
+
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:has(> .MuiButton-startIcon > img)::before {
+    content: var(--brand-name);
+    color: var(--sf-accent);
+    font: 400 2rem/1 var(--sf-font-logo);
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 10px rgb(0 0 0 / 0.45);
+}
+
+/* Seasonal badge beside the wordmark. Zero-sized unless a seasonal theme sets
+ * --season-badge (an SVG url(), used as a mask and filled with the accent). */
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:has(> .MuiButton-startIcon > img)::after {
+    content: "";
+    width: var(--season-badge-size, 0px);
+    height: var(--season-badge-size, 0px);
+    margin-left: calc(var(--season-badge-size, 0px) * 0.3);
+    background: var(--sf-accent);
+    -webkit-mask: var(--season-badge, none) center / contain no-repeat;
+    mask: var(--season-badge, none) center / contain no-repeat;
+}
+
+/* Section links: plain text, no icons, white when active. */
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:not(:has(> .MuiButton-startIcon > img)) {
+    min-width: 0;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+    color: var(--sf-text-soft);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: none;
+    transition: color var(--sf-speed);
+}
+
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:not(:has(> .MuiButton-startIcon > img)) > .MuiButton-startIcon {
+    display: none;
+}
+
+.MuiAppBar-root .MuiStack-root > .MuiButton-root:not(:has(> .MuiButton-startIcon > img)):hover {
+    background: none;
+    color: var(--sf-text-muted);
+}
+
+.MuiAppBar-root .MuiStack-root > .MuiButton-root.MuiButton-textPrimary {
+    color: var(--sf-text);
+    font-weight: 700;
+}
+
+.MuiAppBar-root .MuiIconButton-root {
+    color: var(--sf-text);
+}
+
+.MuiAppBar-root .MuiAvatar-root {
+    border-radius: var(--sf-round-sm);
+}
+
+/* Library title, count chip and toolbar buttons. */
+.MuiAppBar-root .MuiTypography-h2 {
+    color: var(--sf-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.MuiAppBar-root .MuiChip-root {
+    height: 1.6rem;
+    background: var(--sf-raised);
+    color: var(--sf-text-soft);
+    font-weight: 600;
+}
+
+.MuiButtonGroup-contained {
+    box-shadow: none;
+}
+
+.MuiButton-containedPrimary {
+    background: var(--sf-accent);
+    color: var(--sf-on-accent);
+    font-weight: 700;
+    text-transform: none;
+    box-shadow: none;
+}
+
+.MuiButton-containedPrimary:hover {
+    background: var(--sf-accent-hover);
+    box-shadow: none;
+}
+
+/* A–Z jump list on library pages. */
+.alphaPicker-fixed-right .MuiPaper-root {
+    background: transparent;
+}
+
+.alphaPicker-fixed-right .MuiToggleButton-root {
+    border: 0;
+    color: var(--sf-text-muted);
+    font-size: 0.7rem;
+}
+
+.alphaPicker-fixed-right .MuiToggleButton-root:hover,
+.alphaPicker-fixed-right .MuiToggleButton-root.Mui-selected {
+    background: none;
+    color: var(--sf-accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Rows and cards
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.homePage .sections {
+    padding-top: 1rem;
+}
+
+.sectionTitle,
+.sectionTitle-cards {
+    color: var(--sf-text);
+    font-size: 1.3rem;
+    font-size: clamp(1.05rem, 0.85rem + 0.6vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    margin-bottom: 0.35em;
+}
+
+.sectionTitleContainer a.clearLink:hover .sectionTitle {
+    color: var(--sf-accent);
+}
+
+.verticalSection {
+    margin-bottom: 1.25rem;
+}
+
+/* Arrow buttons above each row. */
+.emby-scrollbuttons-button {
+    color: var(--sf-text);
+}
+
+.emby-scrollbuttons-button:disabled {
+    opacity: 0.25;
+}
+
+/* Artwork: rounded corners, then a lift on hover. */
+.cardScalable,
+.cardImageContainer,
+.cardContent,
+.blurhash-canvas,
+.cardOverlayContainer {
+    border-radius: var(--sf-round);
+}
+
+.cardScalable {
+    background: var(--sf-surface);
+    overflow: hidden;
+    transition: transform var(--sf-speed) var(--sf-curve), box-shadow var(--sf-speed) var(--sf-curve);
+}
+
+.cardImageIcon {
+    color: rgb(255 255 255 / 0.25);
+}
+
+@media (hover: hover) {
+    .card-hoverable:hover .cardScalable {
+        z-index: 2;
+        transform: scale(1.045);
+        box-shadow: var(--sf-lift), 0 0 0 2px rgb(255 255 255 / 0.85);
+    }
+}
+
+.card.show-focus:focus .cardScalable {
+    box-shadow: var(--sf-lift), 0 0 0 3px var(--sf-text);
+}
+
+.card:focus-visible .cardScalable {
+    box-shadow: var(--sf-lift), 0 0 0 3px var(--sf-text);
+}
+
+/* Hover overlay: soft bottom shade, round play button. */
+.cardOverlayContainer {
+    background: linear-gradient(0deg, rgb(0 0 0 / 0.8), rgb(0 0 0 / 0.05) 55%);
+}
+
+.cardOverlayFab-primary {
+    background: rgb(255 255 255 / 0.95) !important;
+    color: #000 !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.5);
+}
+
+.cardOverlayButton {
+    color: var(--sf-text);
+}
+
+/* Titles under cards. */
+.cardText {
+    color: var(--sf-text-soft);
+    font-size: 0.85rem;
+}
+
+.cardText-first {
+    font-weight: 600;
+}
+
+.cardText-secondary {
+    color: var(--sf-text-muted);
+    font-size: 0.78rem;
+}
+
+/* Progress, watched tick and counters. */
+.itemProgressBar {
+    height: 4px;
+    background: rgb(255 255 255 / 0.25);
+}
+
+.itemProgressBarForeground {
+    background: var(--sf-accent);
+}
+
+.MuiLinearProgress-root.itemLinearProgress {
+    background: rgb(255 255 255 / 0.25);
+}
+
+.MuiLinearProgress-root .MuiLinearProgress-barColorPrimary {
+    background: var(--sf-accent);
+}
+
+/* Placeholder tiles (no artwork): neutral instead of Jellyfin blue. */
+.defaultCardBackground1,
+.defaultCardBackground2,
+.defaultCardBackground3,
+.defaultCardBackground4,
+.defaultCardBackground5 {
+    background: linear-gradient(135deg, var(--sf-raised), var(--sf-surface));
+}
+
+.indicator,
+.countIndicator,
+.playedIndicator {
+    background: var(--sf-accent);
+    color: var(--sf-on-accent);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.5);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Detail page: full-bleed hero
+ * ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+    /* Detail page hero: total height, and where the title block starts
+     * (both measured from just under the top bar). */
+    --sf-hero-height: 66vh;
+    --sf-hero-title: 40vh;
+}
+
+/* Hero layout on wide screens only: below this width Jellyfin hides
+ * backdrops, so the stock poster layout is kept. */
+@media (min-width: 64em) {
+    /* The hero image is Jellyfin's fixed page backdrop; .itemBackdrop is the
+     * transparent space in front of it, so shading goes on that. */
+    .itemDetailPage .itemBackdrop {
+        position: relative;
+    }
+
+    .layout-desktop .itemDetailPage .itemBackdrop {
+        height: var(--sf-hero-height);
+    }
+
+    .itemDetailPage .itemBackdrop::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background:
+            linear-gradient(90deg, rgb(var(--sf-bg-rgb) / 0.9) 0%, rgb(var(--sf-bg-rgb) / 0.4) 40%, transparent 72%),
+            linear-gradient(0deg, var(--sf-bg) 0%, rgb(var(--sf-bg-rgb) / 0.55) 30%, transparent 60%);
+    }
+
+    /* Title logo: bottom-left of the hero, just above the title block. */
+    .layout-desktop .itemDetailPage .detailLogo {
+        top: calc(var(--sf-hero-title) - 19vh);
+        left: var(--sf-gutter);
+        right: auto;
+        width: 34vw;
+        max-width: 30rem;
+        height: 17vh;
+        background-position: left bottom;
+        filter: drop-shadow(0 4px 20px rgb(0 0 0 / 0.6));
+    }
+
+    /* With a logo shown, the text title would repeat it: keep it for screen readers only. */
+    .layout-desktop .itemDetailPage:has(.detailLogo[style*="url("]) .nameContainer .itemName {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+
+    /* The poster duplicates the hero on desktop, so hide it. */
+    .layout-desktop .itemDetailPage .detailImageContainer {
+        display: none;
+    }
+
+    /* Pull the content up over the hero, then go solid so the fixed backdrop
+     * doesn't show again further down the page. */
+    .layout-desktop .itemDetailPage .detailPageWrapperContainer {
+        position: relative;
+        margin-top: calc(var(--sf-hero-title) - var(--sf-hero-height));
+        background: linear-gradient(180deg, transparent, var(--sf-bg) 11rem);
+    }
+
+    .layout-desktop .itemDetailPage .detailRibbon {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        margin-top: 0;
+        padding-left: var(--sf-gutter);
+    }
+
+    .layout-desktop .itemDetailPage .detailRibbon > * + * {
+        margin-top: 1rem;
+    }
+
+    .layout-desktop .itemDetailPage .detailPagePrimaryContent,
+    .layout-desktop .itemDetailPage .detailPageSecondaryContainer {
+        padding-left: var(--sf-gutter);
+    }
+}
+
+.itemDetailPage .detailPagePrimaryContainer,
+.itemDetailPage .detailRibbon {
+    background: transparent;
+}
+
+.itemDetailPage .itemName {
+    color: var(--sf-text);
+    font-size: 2.6rem;
+    font-size: clamp(1.8rem, 1.2rem + 2vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-shadow: 0 2px 16px rgb(0 0 0 / 0.5);
+}
+
+.itemDetailPage .itemMiscInfo {
+    color: var(--sf-text-soft);
+    font-weight: 500;
+}
+
+.mediaInfoOfficialRating {
+    border: 1px solid rgb(255 255 255 / 0.45);
+    border-radius: 3px;
+    padding: 0 0.35em;
+}
+
+.starIcon {
+    color: #f5c518;
+}
+
+/* Action buttons: white "Play" pill, the rest as glassy discs. */
+.mainDetailButtons {
+    margin: 0;
+}
+
+.detailButton {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0 0.6rem 0 0 !important;
+    padding: 0;
+    border: 1.5px solid rgb(255 255 255 / 0.5);
+    border-radius: 50%;
+    background: rgb(30 30 30 / 0.55);
+    color: var(--sf-text);
+    backdrop-filter: blur(6px);
+    transition: border-color var(--sf-speed), background var(--sf-speed);
+}
+
+.detailButton:hover {
+    border-color: var(--sf-text);
+    background: rgb(60 60 60 / 0.7);
+}
+
+.detailButton-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.detailButton-icon {
+    font-size: 1.45rem;
+}
+
+.mainDetailButtons .btnPlay,
+.mainDetailButtons .btnResume {
+    width: auto;
+    padding: 0 1.6rem 0 1.2rem;
+    border: 0;
+    border-radius: var(--sf-round-sm);
+    background: #fff;
+    color: #000;
+}
+
+.mainDetailButtons .btnPlay:hover,
+.mainDetailButtons .btnResume:hover {
+    background: rgb(255 255 255 / 0.78);
+}
+
+.mainDetailButtons .btnPlay .detailButton-icon,
+.mainDetailButtons .btnResume .detailButton-icon {
+    font-size: 2rem;
+}
+
+.mainDetailButtons .btnPlay .detailButton-content::after,
+.mainDetailButtons .btnResume .detailButton-content::after {
+    content: "Play";
+    margin-left: 0.35rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.mainDetailButtons .btnResume .detailButton-content::after {
+    content: "Resume";
+}
+
+.btnUserRating .detailButton-icon.ratingbutton-icon-withrating,
+.btnPlaystate .detailButton-icon.playstatebutton-icon-played {
+    color: var(--sf-accent);
+}
+
+/* Text under the hero. */
+.itemDetailPage .tagline {
+    color: var(--sf-text);
+    font-weight: 600;
+}
+
+.itemDetailPage .overview {
+    max-width: 68ch;
+    color: var(--sf-text-soft);
+    line-height: 1.6;
+}
+
+.itemDetailPage .itemTags,
+.itemDetailPage .itemExternalLinks,
+.itemDetailPage .itemDetailsGroup .label {
+    color: var(--sf-text-muted);
+}
+
+.itemDetailPage .button-link {
+    color: var(--sf-text-soft);
+    font-weight: 500;
+}
+
+.itemDetailPage .button-link:hover {
+    color: var(--sf-text);
+    text-decoration: underline;
+}
+
+.trackSelections .selectLabel {
+    color: var(--sf-text-muted);
+}
+
+/* Episode lists on series pages. */
+.listItem {
+    border-radius: var(--sf-round);
+    transition: background var(--sf-speed);
+}
+
+.listItem:hover {
+    background: var(--sf-hover);
+}
+
+.listItemBodyText {
+    color: var(--sf-text);
+}
+
+.secondary.listItemBodyText,
+.listItem-overview {
+    color: var(--sf-text-muted);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Controls: buttons, fields, tabs
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.emby-button.raised,
+.raised.cancel {
+    border-radius: var(--sf-round-sm);
+    background: var(--sf-raised);
+    color: var(--sf-text);
+    font-weight: 600;
+    text-transform: none;
+}
+
+.emby-button.raised:hover {
+    background: var(--sf-raised-hover);
+}
+
+.emby-button.button-submit,
+.raised.button-submit {
+    background: var(--sf-accent);
+    color: var(--sf-on-accent);
+    font-weight: 700;
+}
+
+.emby-button.button-submit:hover {
+    background: var(--sf-accent-hover);
+}
+
+.emby-input,
+.emby-textarea,
+.emby-select-withcolor {
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: var(--sf-round-sm);
+    background: rgb(255 255 255 / 0.05);
+    color: var(--sf-text);
+    transition: border-color var(--sf-speed), background var(--sf-speed);
+}
+
+.emby-input:focus,
+.emby-textarea:focus,
+.emby-select-withcolor:focus {
+    border-color: var(--sf-text);
+    background: rgb(255 255 255 / 0.08);
+}
+
+.emby-select-withcolor > option {
+    background: var(--sf-surface);
+    color: var(--sf-text);
+}
+
+.inputLabel,
+.selectLabel,
+.fieldDescription {
+    color: var(--sf-text-muted);
+}
+
+.inputLabelFocused,
+.selectLabelFocused {
+    color: var(--sf-text);
+}
+
+.emby-checkbox:checked + span + .checkboxOutline {
+    border-color: var(--sf-accent);
+    background: var(--sf-accent);
+}
+
+.emby-tab-button {
+    color: var(--sf-text-muted);
+    font-weight: 600;
+}
+
+.emby-tab-button:hover {
+    color: var(--sf-text);
+}
+
+.emby-tab-button.emby-tab-button-active {
+    color: var(--sf-text);
+    box-shadow: inset 0 -3px 0 var(--sf-accent);
+}
+
+.emby-slider-background-lower,
+.mdl-slider-background-lower {
+    background-color: var(--sf-accent) !important;
+}
+
+.emby-slider::-webkit-slider-thumb {
+    background: var(--sf-accent);
+}
+
+.emby-slider::-moz-range-thumb {
+    background: var(--sf-accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Menus and dialogs
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.dialog,
+.actionSheet,
+.MuiMenu-paper,
+.MuiPopover-paper,
+.MuiDialog-paper {
+    border: 1px solid var(--sf-hairline);
+    border-radius: var(--sf-round);
+    background: var(--sf-overlay);
+    color: var(--sf-text-soft);
+    box-shadow: 0 24px 60px rgb(0 0 0 / 0.7);
+}
+
+.dialog.dialog-fullscreen,
+.dialog.dialog-fixedSize {
+    border: 0;
+    border-radius: 0;
+}
+
+.formDialogHeader,
+.formDialogFooter {
+    border-color: var(--sf-hairline);
+    background: transparent;
+}
+
+.actionSheetMenuItem:hover,
+.MuiMenuItem-root:hover {
+    background: var(--sf-hover);
+}
+
+.dialogBackdropOpened {
+    background: rgb(0 0 0 / 0.65);
+}
+
+.toast {
+    border-radius: var(--sf-round-sm);
+    background: var(--sf-raised);
+    color: var(--sf-text);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Sign-in
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/* The server's poster wall stays visible behind, heavily dimmed.
+ * Seasonal themes add layers on top through --sf-login-art. */
+#loginPage {
+    background:
+        var(--sf-login-art),
+        radial-gradient(60rem 36rem at 50% -8%, rgb(var(--sf-accent-rgb) / 0.22), transparent 70%),
+        rgb(var(--sf-bg-rgb) / 0.86);
+}
+
+/* The page starts below the top bar; dim the bar too so the poster wall
+ * doesn't show through undimmed there. */
+@supports selector(:has(a)) {
+    body:has(#loginPage:not(.hide)) .MuiAppBar-root {
+        background: rgb(var(--sf-bg-rgb) / 0.86);
+    }
+}
+
+#loginPage > div {
+    box-sizing: border-box;
+    width: calc(100% - 2rem);
+    max-width: 30rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2.75rem 3.5rem 2.25rem;
+    border: 1px solid var(--sf-hairline);
+    border-radius: var(--sf-round);
+    background: rgb(0 0 0 / 0.72);
+    backdrop-filter: blur(10px);
+}
+
+#loginPage h1 {
+    color: var(--sf-text);
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+/* User tiles: fixed size, so the narrower form doesn't shrink them. */
+#loginPage #divUsers .card {
+    width: 7.5rem;
+}
+
+#loginPage .cardScalable {
+    border-radius: var(--sf-round);
+}
+
+#loginPage .emby-button.raised {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#loginPage .loginDisclaimer {
+    color: var(--sf-text-muted);
+    font-size: 0.8rem;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * TV layout (LG webOS, Android TV, "TV" display mode)
+ * TV uses Jellyfin's classic header instead of the top bar above, and is
+ * driven by remote focus, so every focusable thing needs a clear state.
+ * Selectors here stay simple: webOS 5 runs Chromium 68.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.skinHeader {
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0));
+    color: var(--sf-text);
+}
+
+/* Blur behind the header is costly on TV hardware; use a solid fade instead. */
+.skinHeader.skinHeader-blurred,
+.skinHeader.skinHeader-withBackground {
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.92), rgb(var(--sf-bg-rgb) / 0.88));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+/* Wordmark in place of the Jellyfin logo image. */
+.skinHeader .pageTitleWithLogo {
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: auto;
+    margin: 0;
+    background-image: none !important;
+}
+
+.skinHeader .pageTitleWithLogo::before {
+    content: var(--brand-name);
+    color: var(--sf-accent);
+    font: 400 2.3rem/1 var(--sf-font-logo);
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+}
+
+.skinHeader .pageTitleWithLogo::after {
+    content: "";
+    width: var(--season-badge-size, 0px);
+    height: var(--season-badge-size, 0px);
+    margin-left: calc(var(--season-badge-size, 0px) * 0.3);
+    background: var(--sf-accent);
+    -webkit-mask: var(--season-badge, none) center / contain no-repeat;
+    mask: var(--season-badge, none) center / contain no-repeat;
+}
+
+.skinHeader .pageTitle {
+    color: var(--sf-text);
+    font-weight: 700;
+}
+
+.skinHeader .headerButton,
+.currentTimeText {
+    color: var(--sf-text-soft);
+}
+
+.layout-tv .backdropFilter,
+.layout-tv #loginPage > div,
+.layout-tv .detailButton {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+/* Remote focus: white fill, black content, for anything button-like. */
+.layout-tv .headerButton:focus,
+.layout-tv .paper-icon-button-light:focus,
+.layout-tv .emby-button.raised:focus,
+.layout-tv .detailButton:focus,
+.layout-tv .emby-tab-button:focus {
+    border-color: #fff;
+    background: #fff;
+    color: #000;
+}
+
+.layout-tv .emby-tab-button {
+    border-radius: var(--sf-pill);
+}
+
+/* The play button is already white, so it turns accent when focused. */
+.layout-tv .mainDetailButtons .btnPlay:focus,
+.layout-tv .mainDetailButtons .btnResume:focus,
+.layout-tv .emby-button.button-submit:focus {
+    background: var(--sf-accent);
+    color: var(--sf-on-accent);
+    box-shadow: 0 0 0 3px #fff;
+}
+
+.layout-tv .card.show-focus:focus .cardScalable {
+    box-shadow: var(--sf-lift), 0 0 0 4px #fff;
+}
+
+.layout-tv .card.show-focus:focus .cardText-first {
+    color: var(--sf-text);
+}
+
+.layout-tv .listItem:focus {
+    background: rgb(255 255 255 / 0.12);
+    box-shadow: inset 0 0 0 2px #fff;
+}
+
+.layout-tv .button-link:focus {
+    background: none;
+    color: var(--sf-accent);
+    text-decoration: underline;
+}
+
+.layout-tv .emby-input:focus,
+.layout-tv .emby-select-withcolor:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Video player
+ * ───────────────────────────────────────────────────────────────────────── */
+
+.videoOsdBottom {
+    background: linear-gradient(0deg, rgb(0 0 0 / 0.85), transparent);
+}
+
+.osdHeader {
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.75), transparent);
+}
+
+.osdTitle,
+.osdTextContainer {
+    color: var(--sf-text);
+}

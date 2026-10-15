@@ -1,0 +1,43 @@
+/*! SeasonFin seasonal theme: TEMPLATE (load after base/theme.css)
+ * Copy this folder to seasonal/<season>/, rename, and fill in the values.
+ * MIT licensed; see LICENSE. */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Tokens
+ * Everything here is optional; anything left out keeps the base value.
+ * Keep each colour and its "-rgb" twin in sync (same colour, written as
+ * space-separated R G B) or some highlights will show the wrong colour.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+    /* Accent: wordmark, primary buttons, progress bars, badges, selection. */
+    --sf-accent: #e50914;
+    --sf-accent-hover: #f6121d;
+    --sf-accent-rgb: 229 9 20;
+    /* Text on accent buttons: white for dark accents, near-black for light ones. */
+    --sf-on-accent: #fff;
+
+    /* Page and surfaces. Keep them dark: text stays white on top. */
+    --sf-bg: #0b0b0b;
+    --sf-bg-rgb: 11 11 11;
+    --sf-surface: #161616;
+    --sf-surface-rgb: 22 22 22;
+    --sf-raised: #222;
+    --sf-raised-hover: #2e2e2e;
+    --sf-overlay: rgb(20 20 20 / 0.97);
+
+    /* Logo badge: an SVG used as a mask and filled with the accent.
+     * Leave out to show no badge. */
+    /* --season-badge: url("data:image/svg+xml,..."); */
+    /* --season-badge-size: 1.6rem; */
+
+    /* Sign-in page art: extra background layers over the dimmed poster wall,
+     * e.g. a moon or snow. Comma-separate several gradients. */
+    /* --sf-login-art: radial-gradient(...), radial-gradient(...); */
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Decorations (optional)
+ * Keep them light: no layout changes, pointer-events: none on overlays,
+ * and wrap any animation in @media (prefers-reduced-motion: no-preference).
+ * ───────────────────────────────────────────────────────────────────────── */
