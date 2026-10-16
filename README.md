@@ -56,6 +56,49 @@ Seasonal themes load on top of the base theme and change colours and decorations
 
 Only load one seasonal theme at a time. All `@import` lines must come before the `:root { ... }` block. To go back to the base look, delete the seasonal line.
 
+#### Halloween
+
+A pumpkin-orange look on purple-black, with decorations:
+
+| Decoration | Where | Switch |
+| --- | --- | --- |
+| Jack-o'-lanterns | Glowing pumpkins in both bottom corners | `--hw-pumpkins` |
+| Hanging bats | Bats on threads under the top bar, swinging gently | `--hw-hanging-bats` |
+| Flying bats | A small flock that crosses the screen every 30 seconds or so | `--hw-flying-bats` |
+| Spider web | Top-right corner, with a dangling spider | `--hw-web` |
+| Orange glow | A warm glow along the bottom edge | `--hw-glow` |
+| Moon | Full moon on the sign-in page | `--sf-login-art` |
+| Logo pumpkin | Small pumpkin next to your brand name | `--season-badge-size` |
+
+All decorations are on by default. To use Halloween with everything on, your Custom CSS looks like this:
+
+```css
+@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@1/base/theme.css");
+@import url("https://cdn.jsdelivr.net/gh/rambalasb/seasonfin@1/seasonal/halloween/theme.css");
+
+:root {
+    --brand-name: "MyTV";
+}
+```
+
+To turn decorations off, add their switches to the same `:root { ... }` block. Copy only the lines for the ones you want to hide:
+
+```css
+:root {
+    --brand-name: "MyTV";
+
+    --hw-pumpkins: none;         /* no jack-o'-lanterns */
+    --hw-hanging-bats: none;     /* no hanging bats */
+    --hw-flying-bats: none;      /* no flying bats */
+    --hw-web: none;              /* no spider web */
+    --hw-glow: none;             /* no orange glow along the bottom */
+    --sf-login-art: none;        /* no moon on the sign-in page */
+    --season-badge-size: 0px;    /* no pumpkin next to the logo */
+}
+```
+
+Decorations never block clicks or the remote, and they hide while a video plays. On phones the pumpkins are smaller and the flying bats are left out. If your device is set to reduce motion, the bats stay still.
+
 #### Making a new seasonal theme
 
 Copy `seasonal/_template/` to `seasonal/<season>/` and fill in the values:
@@ -64,6 +107,7 @@ Copy `seasonal/_template/` to `seasonal/<season>/` and fill in the values:
 - **Text on buttons:** for a light accent (yellow, pink, orange), set `--sf-on-accent` to a near-black so button text stays readable.
 - **Logo icon:** `--season-badge` puts a small icon next to the logo.
 - **Sign-in page:** `--sf-login-art` adds extra background layers, such as a moon or snow.
+- **Decorations:** see the second half of `seasonal/halloween/theme.css` for how to place them. Give each one a switch with `display: var(--xx-name, block)` (using a short prefix for the season), and list the switches in this README the way Halloween does.
 
 <hr>
 
